@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "Cite the associated manuscript. This code is a newly written paper-aligned reconstruction, not recovered original source. Verify manuscript publication details before adding them."
+title: "Syncmesh — distributed data and computing paper-aligned starter"
+type: software
+version: 0.1.0
+authors:
+  - family-names: Veluguri
+    given-names: Sai Pavan
+preferred-citation:
+  type: generic
+  title: "Orchestrating Distributed Data and Computing in Decentralized Environments: A Unified Approach"
+  authors:
+    - family-names: Veluguri
+      given-names: Sai Pavan

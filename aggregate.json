@@ -1,0 +1,9 @@
+{
+  "query": "query($filter: MeasurementFilter) { measurements(filter: $filter) { temperature humidity pressure } }",
+  "variables": {"filter": {}},
+  "database": "syncmesh",
+  "collection": "measurements",
+  "request_type": "aggregate",
+  "use_meta_data": true,
+  "external_nodes": []
+}

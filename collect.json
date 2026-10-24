@@ -1,0 +1,8 @@
+{
+  "query": "query { measurements { id replica_id origin sensor_id timestamp temperature humidity pressure } }",
+  "database": "syncmesh",
+  "collection": "measurements",
+  "request_type": "collect",
+  "use_meta_data": true,
+  "external_nodes": []
+}

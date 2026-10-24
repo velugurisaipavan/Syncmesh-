@@ -1,0 +1,170 @@
+services:
+  mongo1:
+    image: mongo:7.0
+    command:
+    - mongod
+    - --replSet
+    - rs1
+    - --bind_ip_all
+    volumes:
+    - mongo1-data:/data/db
+    networks:
+    - mesh
+  init1:
+    image: mongo:7.0
+    depends_on:
+    - mongo1
+    entrypoint:
+    - sh
+    - /scripts/init-replica.sh
+    environment:
+      MONGO_HOST: mongo1
+      REPLICA_SET: rs1
+    volumes:
+    - ./deploy/init-replica.sh:/scripts/init-replica.sh:ro
+    networks:
+    - mesh
+  node1:
+    build: .
+    environment: &id001
+      SYNCMESH_TOKEN: ${SYNCMESH_TOKEN:?Set a random token of at least 32 characters
+        in .env}
+      NODE_URL: http://node1:8080
+      PEER_ALLOWLIST: http://node2:8080,http://node3:8080
+      NODE_LATITUDE: '42.0'
+      NODE_LONGITUDE: '23.0'
+      MONGO_URI: mongodb://mongo1:27017/?replicaSet=rs1
+    depends_on:
+      init1:
+        condition: service_completed_successfully
+    ports:
+    - 127.0.0.1:8081:8080
+    networks:
+    - mesh
+  listener1:
+    build: .
+    environment: *id001
+    command:
+    - python
+    - -m
+    - syncmesh.listener
+    depends_on:
+      node1:
+        condition: service_started
+    networks:
+    - mesh
+  mongo2:
+    image: mongo:7.0
+    command:
+    - mongod
+    - --replSet
+    - rs2
+    - --bind_ip_all
+    volumes:
+    - mongo2-data:/data/db
+    networks:
+    - mesh
+  init2:
+    image: mongo:7.0
+    depends_on:
+    - mongo2
+    entrypoint:
+    - sh
+    - /scripts/init-replica.sh
+    environment:
+      MONGO_HOST: mongo2
+      REPLICA_SET: rs2
+    volumes:
+    - ./deploy/init-replica.sh:/scripts/init-replica.sh:ro
+    networks:
+    - mesh
+  node2:
+    build: .
+    environment: &id002
+      SYNCMESH_TOKEN: ${SYNCMESH_TOKEN:?Set a random token of at least 32 characters
+        in .env}
+      NODE_URL: http://node2:8080
+      PEER_ALLOWLIST: http://node1:8080,http://node3:8080
+      NODE_LATITUDE: '42.01'
+      NODE_LONGITUDE: '23.0'
+      MONGO_URI: mongodb://mongo2:27017/?replicaSet=rs2
+    depends_on:
+      init2:
+        condition: service_completed_successfully
+    ports:
+    - 127.0.0.1:8082:8080
+    networks:
+    - mesh
+  listener2:
+    build: .
+    environment: *id002
+    command:
+    - python
+    - -m
+    - syncmesh.listener
+    depends_on:
+      node2:
+        condition: service_started
+    networks:
+    - mesh
+  mongo3:
+    image: mongo:7.0
+    command:
+    - mongod
+    - --replSet
+    - rs3
+    - --bind_ip_all
+    volumes:
+    - mongo3-data:/data/db
+    networks:
+    - mesh
+  init3:
+    image: mongo:7.0
+    depends_on:
+    - mongo3
+    entrypoint:
+    - sh
+    - /scripts/init-replica.sh
+    environment:
+      MONGO_HOST: mongo3
+      REPLICA_SET: rs3
+    volumes:
+    - ./deploy/init-replica.sh:/scripts/init-replica.sh:ro
+    networks:
+    - mesh
+  node3:
+    build: .
+    environment: &id003
+      SYNCMESH_TOKEN: ${SYNCMESH_TOKEN:?Set a random token of at least 32 characters
+        in .env}
+      NODE_URL: http://node3:8080
+      PEER_ALLOWLIST: http://node1:8080,http://node2:8080
+      NODE_LATITUDE: '42.02'
+      NODE_LONGITUDE: '23.0'
+      MONGO_URI: mongodb://mongo3:27017/?replicaSet=rs3
+    depends_on:
+      init3:
+        condition: service_completed_successfully
+    ports:
+    - 127.0.0.1:8083:8080
+    networks:
+    - mesh
+  listener3:
+    build: .
+    environment: *id003
+    command:
+    - python
+    - -m
+    - syncmesh.listener
+    depends_on:
+      node3:
+        condition: service_started
+    networks:
+    - mesh
+volumes:
+  mongo1-data: {}
+  mongo2-data: {}
+  mongo3-data: {}
+networks:
+  mesh:
+    driver: bridge
