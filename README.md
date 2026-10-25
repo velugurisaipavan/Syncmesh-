@@ -2,7 +2,6 @@
 
 **New paper-aligned Python starter** for *Orchestrating Distributed Data and Computing in Decentralized Environments: A Unified Approach*, Sai Pavan Veluguri.
 
-> This is newly written reconstruction code, not recovered original experimental scripts. No original GCP benchmark, network-traffic reduction, latency result, or production-readiness claim is reproduced. The associated paper PDF is not bundled.
 
 ## What is implemented
 
